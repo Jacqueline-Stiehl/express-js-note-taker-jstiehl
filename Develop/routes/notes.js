@@ -6,17 +6,18 @@
 //anything that comes in with /api should go to index file
 const router = require("express").Router();
 const dbData = require("../db/db.json");
-const uuid = require("uuid");
+const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
+const path = require("path");
 
 //function readJsonFile() {}
 
 // * `GET /notes` should return the `notes.html` file./logic for getting all the notes and send back a response
 //read json file and get data out of it and send it back
 router.get("/", (req, res) => {
-  fs.readFile("../db/db.json", "utf-8", (err, data) => {
+  fs.readFile(path.join(__dirname, "../db/db.json"), "utf-8", (err, data) => {
     const parsed = JSON.parse(data);
-    res.status(200).json({ notes: parsed });
+    res.status(200).json(parsed);
   });
 });
 
@@ -54,39 +55,35 @@ router.get("/", (req, res) => {
 // 5. Send a response back to the browser
 
 //OR:(from 19 Data Persistence)
-router.post("/api/notes", (req, res) => {
-  const { noteTitle, noteText } = req.body;
-  if (noteTitle && noteText) {
+router.post("/", (req, res) => {
+  const { title, text } = req.body;
+  if (title && text) {
     const newNote = {
-      noteTitle,
-      noteText,
-      note_id: uuid(),
+      title,
+      text,
+      note_id: uuidv4(),
     };
-
-    // I need help here to put code here to read the existing file first before writing to the file
-
-    router.get("/api/notes", (req, res) => {
-      fs.readFile("../db/db.json", "utf-8", (err, data) => {
-        const parsed = JSON.parse(data);
-        res.status(200).json({ notes: parsed });
-      });
+    console.log(newNote);
+    fs.readFile(path.join(__dirname, "../db/db.json"), "utf-8", (err, data) => {
+      const parsed = JSON.parse(data);
+      parsed.push(newNote);
     });
-
-    const reviewString = JSON.stringify(newNote);
-    fs.writeFile(
-      "../db/db.json",
-      `${newNote.noteTitle}.json`,
-      reviewString,
-      (err) =>
+    fs.appendFile(
+      path.join(__dirname, "../db/db.json"),
+      `${newNote}.json`,
+      (err) => {
         err
           ? console.error(err)
           : console.log(
               `New note ${newNote.product} has been added to JSON file`
-            )
+            );
+      }
     );
-    //prepare a response object to send back to the client
+    res.status(200).json(parsed);
+
+    //     //prepare a response object to send back to the client
+    //       //from lesson 15 server.js file
     let response = {
-      //from lesson 15 server.js file
       status: "Success",
       body: newNote,
     };
