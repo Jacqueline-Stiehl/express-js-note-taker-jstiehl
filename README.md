@@ -49,4 +49,4 @@ https://github.com/Jacqueline-Stiehl/express-js-note-taker-jstiehl
 
 ## URL of deployed application
 
-https://jacqueline-stiehl.github.io/3p-api-work-day-scheduler-jstiehl/
+https://jacqueline-stiehl.github.io/express-js-note-taker-jstiehl/
