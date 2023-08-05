@@ -2,10 +2,6 @@ const router = require("express").Router();
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
-const {
-  readFromFile,
-  writeToFile,
-} = require("../../../../real-lessons/11-Express/01-Activities/28-Stu_Mini-Project/Main/helpers/fsUtils");
 
 router.get("/", (req, res) => {
   fs.readFile(path.join(__dirname, "../db/db.json"), "utf-8", (err, data) => {
@@ -46,13 +42,15 @@ router.post("/", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   const noteID = req.params.id;
-  readFromFile("./db/db.json")
-    .then((data) => JSON.parse(data))
-    .then((json) => {
-      const result = json.filter((id) => id.id !== noteID);
-      writeToFile("./db/db.json", result);
-      res.json(`${noteID} has been deleted.`);
-    });
+  fs.readFile("./db/db.json", "utf-8", (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    const data2 = JSON.parse(data);
+    const filtered = data2.filter((note) => note.id !== noteID);
+    fs.writeFile("./db/db.json", JSON.stringify(filtered), (err) =>
+      console.log(err)
+    );
+    res.json(`${noteID} has been deleted.`);
+  });
 });
 
 module.exports = router;
