@@ -50,3 +50,7 @@ https://github.com/Jacqueline-Stiehl/express-js-note-taker-jstiehl
 ## URL of deployed application
 
 https://jacqueline-stiehl.github.io/express-js-note-taker-jstiehl/
+
+## Heroku
+
+Heroku app name: note-taker-jstiehl: https://note-taker-jstiehl-df68c54ee51b.herokuapp.com/
